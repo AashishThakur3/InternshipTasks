@@ -80,3 +80,143 @@ CREATE TABLE task(
 	module_name varchar(20),
 	emp_id int references employee(emp_id)
 );
+
+-- Inserting data into tables
+
+INSERT INTO person(person_id,first_name,last_name,gender,date_of_birth,email,contact_no,address)
+VALUES(1,'ASHISH', 'TAKUR', 'M', '1999-06-30', 'ashishthakur3069@gmail.com', 9079840480, 'Jodhpur'), 
+	(2, 'asd' , 'fgh', 'M', '1990-11-15', 'abcbcd@gmail.com', 1122334455, 'pune'), 
+	(3, 'bdf' , 'rty', 'M', '1993-01-21', 'bdfbcd@gmail.com', 9876543210, 'mumbai'),
+	(4, 'cfg' , 'zxc', 'F', '1997-02-16', 'cfgbcd@gmail.com', 123456789, 'delhi'),
+	(5, 'dgh' , 'cvb', 'M', '1990-11-15', 'dghbcd@gmail.com', 1122334455, 'bhopal'), 
+	(6, 'ehj' , 'xcv', 'M', '1993-01-21', 'xcvbcd@gmail.com', 9876543210, 'raipur'),
+	(7, 'fjk' , 'bnm', 'F', '1997-02-16', 'abbcd@gmail.com', 123456789, 'jodhpur'),
+	(8, 'gkl' , 'tyu', 'M', '1990-11-15', 'tyubcd@gmail.com', 1122334455, 'bikaner'), 
+	(9, 'hui' , 'qhjk', 'M', '1993-01-21', 'asdbcd@gmail.com', 9876543210, 'Pune'),
+	(10, 'iyu' , 'aej', 'F', '1997-02-16', 'fghbcd@gmail.com', 123456789, 'mumbai');
+
+
+INSERT INTO leads 
+VALUES (1, '2019-06-21', 3),
+(2, '2020-10-22', 4),
+(3, '2018-01-19', 5),	
+(4, '2021-03-08', 6),
+(5, '2021-12-03', 7),
+(6, '2021-07-12', 8);
+
+
+INSERT INTO plan 
+VALUES(1, '40Mbps', '2 month', '180GB' , 399),
+(2, '80Mbps', '84 DAYS', 'unlimited' , 399),
+(3, '160Mbps', '6 months', '900GB' , 699),
+(4, '200Mbps', '12 month', '12180GB' , 15999),
+(5, '150Mbps', '9 month', '6000GB' , 9999);
+
+
+INSERT INTO opportunity
+VALUES(1, '2021-10-21', 3, 2, 2),
+(2, '2021-08-15', 4, 1, 2),
+(3, '2021-12-10', 5, 4, 5),
+(4, '2021-07-25', 6, 5, 1);
+
+
+INSERT INTO customer 
+VALUES(1, 'dummy' , 'dummydata', '1234567890', 3, 4),
+(2, 'Aashish', 'AashishThakur', '1234567890', 4, 5 ),
+(3, 'Test', 'test', '1234567834', 2, 5 );
+
+
+INSERT INTO employee
+VALUES(1, 'manager', 1, 2),
+(2, 'analyst', 2, 1);
+
+
+INSERT INTO task(task_id,task_name,task_desc,task_status,start_date,expected_end_date,actual_end_date,assigned_by,module_id,module_name,emp_id) 
+VALUES(1, 'Installation', 'Installing new Fibre','completed', '2021-07-26' ,'2021-08-30','2021-09-01', 'admin1', 011, 'INSTALL', '1'),
+(2, 'Inspection', 'Inspecting performance','pending', '2021-07-26' ,'2021-08-30','2021-12-15', 'admin1', 012, 'INSPECT', '1');
+
+
+-- Queries
+--1
+select le.lead_id ,le.created_at, le.person_id, opp.opportunity_id, opp.plan_id
+from lead le join opportunity opp using(lead_id);
+
+--2
+select * from lead;
+	
+	
+--3
+select le.lead_id ,le.created_at, le.person_id, opp.opportunity_id, opp.plan_id
+from lead le join opportunity opp using(lead_id);
+	
+	
+--4	
+select le.lead_id ,le.created_at, le.person_id, cus.customer_id, opp.opportunity_id from lead le
+join opportunity opp using(lead_id)
+join customer cus ON using(opportunity_id);
+	
+	
+--5
+select le.lead_id ,le.created_at, le.person_id, cus.customer_id, op.opportunity_id
+from lead le
+join opportunity op using(lead_id)
+join customer cus using(opportunity_id);	
+	
+	
+--6
+select module_id,module_name count(task_id) from task group by module_id,module_name;
+
+	
+
+
+
+
+--8
+select cus.customer_id , pe.person_id, pe.contact_no, pe.first_name
+	from customer cus 
+	join opportunity opp ON opp.opportunity_id = cus.opportunity_id
+	join lead le ON  le.lead_id = opp.lead_id
+	join person pe ON  pe.person_id=  le.person_id
+	where pe.contact_no = 0;
+
+
+
+--9
+select * from task where start_date != current_date;
+
+
+--10
+select * from task where task_status = 'completed';
+
+
+--11
+select * from task where start_date > current_date;
+
+
+--12
+select cus.customer_id , cus.ac_details, pe.contact_no, pe.first_name
+	from customer cus 
+	join opportunity opp ON opp.opportunity_id = cus.opportunity_id
+	join lead le ON  le.lead_id = opp.lead_id
+	join person pe ON  pe.person_id=  le.person_id;
+
+
+--13
+select count(le.lead_id) 
+from lead le
+join opportunity opp ON opp.lead_id = le.lead_id
+join customer cus ON cus.opportunity_id = opp.opportunity_id;
+
+
+--14
+select * from opportunity;
+
+
+--15
+select cus.customer_id, opp.opportunity_id, cus.cust_username from opportunity opp 
+join customer cus ON cus.opportunity_id = opp.opportunity_id;
+
+
+--16
+select plan_id, plan_name, plan_validity, plan_data, count(plan_id) from customer join plan using(plan_id) group by plan_id, plan_name, plan_validity, plan_data;
+
